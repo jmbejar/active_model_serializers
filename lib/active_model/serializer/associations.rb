@@ -46,6 +46,7 @@ module ActiveModel
         end
 
         def build_serializer(object, options = {})
+          @serializer_class = nil if @serializer_class == DefaultSerializer
           @serializer_class ||= Serializer.serializer_for(object) || DefaultSerializer
           options[:_wrap_in_array] = embed_in_root?
           super

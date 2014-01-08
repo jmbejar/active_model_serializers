@@ -27,6 +27,11 @@ ActiveRecord::Schema.define do
     t.string :name
   end
 
+  create_table :ar_authors, force: true do |t|
+    t.string :name
+    t.belongs_to :ar_comment, index: true
+  end
+
   create_table :ar_posts_tags, force: true do |t|
     t.references :ar_post, :ar_tag, index: true
   end
@@ -45,12 +50,17 @@ end
 class ARComment < ActiveRecord::Base
   belongs_to :ar_post, class_name: 'ARPost'
   has_and_belongs_to_many :ar_tags, class_name: 'ARTag', join_table: :ar_comments_tags
+  has_one :ar_author, class_name: 'ARAuthor'
 end
 
 class ARTag < ActiveRecord::Base
 end
 
 class ARSection < ActiveRecord::Base
+end
+
+class ARAuthor < ActiveRecord::Base
+  belongs_to :ar_comment, class_name: 'ARAuthor'
 end
 
 class ARPostSerializer < ActiveModel::Serializer
@@ -63,6 +73,7 @@ end
 class ARCommentSerializer < ActiveModel::Serializer
   attributes :body
 
+  has_one :ar_author
   has_many :ar_tags
 end
 
@@ -72,6 +83,10 @@ end
 
 class ARSectionSerializer < ActiveModel::Serializer
   attributes 'name'
+end
+
+class ARAuthorSerializer < ActiveModel::Serializer
+  attributes :name
 end
 
 ARPost.create(title: 'New post',
@@ -88,5 +103,6 @@ ARPost.create(title: 'New post',
 
   post.ar_comments.create(body: 'i liked it').tap do |comment|
     comment.ar_tags.concat happy_tag, short_tag
+    comment.create_ar_author(name: 'Joe')
   end
 end

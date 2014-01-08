@@ -14,8 +14,8 @@ module ActiveModel
         assert_equal({
           'ar_post' => {
             title: 'New post', body: 'A body!!!',
-            ar_comments: [{ body: 'what a dumb post', ar_tags: [{ name: 'happy' }, { name: 'whiny' }] },
-                          { body: 'i liked it', ar_tags: [{:name=>"happy"}, {:name=>"short"}] }],
+            ar_comments: [{ body: 'what a dumb post', ar_author: nil, ar_tags: [{ name: 'happy' }, { name: 'whiny' }] },
+                          { body: 'i liked it', ar_author: { name: 'Joe' }, ar_tags: [{:name=>"happy"}, {:name=>"short"}] }],
             ar_tags: [{ name: 'short' }, { name: 'whiny' }],
             ar_section: { 'name' => 'ruby' }
           }
@@ -49,10 +49,11 @@ module ActiveModel
                 'ar_tag_ids' => [1, 2],
                 'ar_section_id' => 1
               },
-              ar_comments: [{ body: 'what a dumb post', 'ar_tag_ids' => [3, 2] },
-                            { body: 'i liked it', 'ar_tag_ids' => [3, 1] }],
+              ar_comments: [{ body: 'what a dumb post', 'ar_author_id' => nil, 'ar_tag_ids' => [3, 2] },
+                            { body: 'i liked it', 'ar_author_id' => 1, 'ar_tag_ids' => [3, 1] }],
               ar_tags: [{ name: 'happy' }, { name: 'whiny' }, { name: 'short' }],
-              'ar_sections' => [{ 'name' => 'ruby' }]
+              'ar_sections' => [{ 'name' => 'ruby' }],
+              'ar_authors' => [{ name: 'Joe' }]
             }, post_serializer.as_json)
           end
         end
